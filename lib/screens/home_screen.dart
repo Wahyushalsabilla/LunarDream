@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '/models/dream.dart';
-import '/widgets/logo_widget.dart';
-import '/widgets/dream_card.dart';
 import '/theme/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
