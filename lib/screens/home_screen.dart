@@ -5,41 +5,43 @@ import '/theme/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+  
+  // Make dreams list static so it can be accessed from other screens
+  static List<Dream> dreams = Dream.sampleDreams;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Dream> dreams = Dream.sampleDreams;
   Dream? selectedDream;
   bool showDetails = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF011638), // Dark blue background
+       backgroundColor: AppTheme.primaryColor, 
       body: SafeArea(
         child: Column(
           children: [
             // App bar with logo on the right
-          Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start, // Posisi ke kiri
-            crossAxisAlignment: CrossAxisAlignment.start, // Posisi ke atas
-            children: [
-             Image.asset(
-                'images/logo2.png',
-                height: 94,
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    'images/logo2.png',
+                    height: 94,
+                  ),
+                ],
               ),
-            ],
-          ),
-          ),
+            ),
             
             // Dream list
             Expanded(
-              child: dreams.isEmpty
+              child: HomeScreen.dreams.isEmpty
                   ? _buildEmptyState()
                   : _buildDreamList(),
             ),
@@ -50,18 +52,125 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final result = await Navigator.pushNamed(context, '/add-dream');
-          if (result != null && result is Dream) {
-            setState(() {
-              dreams.add(result);
-            });
-          }
-        },
-        backgroundColor: AppTheme.primaryColor,
-        child: const Icon(Icons.add),
+      // Bottom navigation bar
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: Color(0xFF1A1F37),
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+          ),
+          child: BottomAppBar(
+            height: 70,
+            padding: EdgeInsets.zero,
+            notchMargin: 10,
+            shape: const CircularNotchedRectangle(),
+            color: const Color(0xFF1A1F37),
+            elevation: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+              // Left button - View Card Dream
+Expanded(
+  child: InkWell(
+    onTap: () {
+      // Already on dreams screen, no need to navigate
+    },
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.auto_stories,
+          color: Color(0xFF394FAA),  // Highlight in blue to show active
+          size: 24,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Dreams',
+          style: TextStyle(
+            color: Color(0xFF394FAA),  // Highlight in blue to show active
+            fontSize: 12,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+                // Spacer for FAB
+                const Expanded(child: SizedBox()),
+                
+                // Right button - View Article
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/view-article');
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.article_outlined,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Articles',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
+      // Floating action button untuk add dream
+      floatingActionButton: Container(
+        height: 65,
+        width: 65,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color : Color(0xFF394FAA),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFF3148A1),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () async {
+            // Simpan hasil dari add dream screen
+            final result = await Navigator.pushNamed(context, '/add-dream');
+            
+            // Update state jika ada dream baru
+            if (result != null && result is Dream) {
+              setState(() {
+                HomeScreen.dreams.add(result);
+              });
+            }
+          },
+          backgroundColor: const Color.fromARGB(0, 205, 45, 45),
+          elevation: 0,
+          child: const Icon(
+            Icons.add,
+            size: 30,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -70,10 +179,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-         Opacity(
+          Opacity(
             opacity: 0.45,
             child: Container(
-              margin: const EdgeInsets.only(right: 10),  // Menambahkan margin kanan
+              margin: const EdgeInsets.only(right: 10),
               child: Image.asset(
                 'images/moon.png',
                 height: 94,
@@ -105,10 +214,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildDreamList() {
     return ListView.builder(
-      itemCount: dreams.length,
+      itemCount: HomeScreen.dreams.length,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemBuilder: (context, index) {
-        final dream = dreams[index];
+        final dream = HomeScreen.dreams[index];
         return _buildDreamCard(dream);
       },
     );
@@ -134,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF0D2143) : const Color(0xFF0D1B40),
+          color: isSelected ? const Color.fromARGB(255, 22, 38, 103) : Color.fromARGB(255, 21, 8, 82),
           borderRadius: BorderRadius.circular(12),
           border: isSelected 
               ? Border.all(color: Colors.white.withOpacity(0.3), width: 1)
@@ -297,9 +406,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   
                   if (result != null && result is Dream) {
                     setState(() {
-                      final index = dreams.indexWhere((d) => d.id == selectedDream!.id);
+                      final index = HomeScreen.dreams.indexWhere((d) => d.id == selectedDream!.id);
                       if (index != -1) {
-                        dreams[index] = result;
+                        HomeScreen.dreams[index] = result;
                         selectedDream = result;
                       }
                     });
@@ -343,7 +452,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Navigator.pop(context); // Close dialog
                 setState(() {
-                  dreams.removeWhere((d) => d.id == selectedDream!.id);
+                  HomeScreen.dreams.removeWhere((d) => d.id == selectedDream!.id);
                   showDetails = false;
                   selectedDream = null;
                 });
@@ -357,4 +466,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

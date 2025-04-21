@@ -6,6 +6,7 @@ import 'screens/welcome_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/add_dream_screen.dart';
 import 'screens/edit_dream_screen.dart';
+import 'screens/article_screen.dart';
 import 'models/dream.dart';
 import 'theme/app_theme.dart';
 
@@ -39,6 +40,8 @@ Widget build(BuildContext context) {
       '/welcome': (context) => const WelcomeScreen(),
       '/home': (context) => const HomeScreen(),
       '/add-dream': (context) => const AddDreamScreen(),
+      '/view-card-dream': (context) => const HomeScreen(),
+      '/view-article': (context) => const ArticleScreen(),
     },
     onGenerateRoute: (settings) {
       if (settings.name == '/edit-dream') {

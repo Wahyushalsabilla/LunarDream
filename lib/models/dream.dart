@@ -29,23 +29,19 @@ class Dream {
     );
   }
 
-  // Sample dreams for demo
-  static List<Dream> sampleDreams = [
-    Dream(
-      id: '1',
-      date: DateTime(2025, 3, 25),
-      title: 'Taman peri',
-      description: 'Pergi ke taman bunga membuatku sangat senang sekali. Aku bertemu dengan banyak bunga yang indah.',
-      mood: 'happy',
-    ),
-    Dream(
-      id: '2',
-      date: DateTime(2025, 3, 27),
-      title: 'Ketemu Ibuperi',
-      description: 'Ibu peri datang ke mimpiku!',
-      mood: 'scared',
-    ),
-  ];
+  // Empty sample dreams list
+  static List<Dream> sampleDreams = [];
+  
+  // If you need to create sample dreams in the future, you can use this method
+  static void createSampleDreams() {
+    sampleDreams = [
+      Dream(
+        id: '1',
+        date: DateTime.now(),
+        title: 'Sample Dream',
+        description: 'This is a sample dream.',
+        mood: 'happy',
+      ),
+    ];
+  }
 }
-
-

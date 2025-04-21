@@ -19,6 +19,10 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
   late TextEditingController _descriptionController;
   late String _selectedMood;
   final _formKey = GlobalKey<FormState>();
+  
+  // Add focus nodes to track focus state
+  final _titleFocusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -26,22 +30,31 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
     _titleController = TextEditingController(text: widget.dream.title);
     _descriptionController = TextEditingController(text: widget.dream.description);
     _selectedMood = widget.dream.mood;
+    
+    // Add listeners to rebuild when focus changes
+    _titleFocusNode.addListener(() {
+      setState(() {});
+    });
+    _descriptionFocusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    // Dispose focus nodes
+    _titleFocusNode.dispose();
+    _descriptionFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Dream'),
-        centerTitle: true,
-      ),
+      backgroundColor: AppTheme.primaryColor,
+      appBar: AppBar(title: const Text('Edit Dream'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -49,16 +62,32 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Name this dream',
-                style: AppTheme.subheadingStyle,
-              ),
+              Text('Name this dream', style: AppTheme.subheadingStyle),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter a title for your dream',
+                focusNode: _titleFocusNode,
+                cursorColor: Color.fromARGB(255, 46, 42, 148),
+                cursorWidth: 2.5,
+                cursorHeight: 24.0,
+                showCursor: true,
+                cursorRadius: Radius.circular(1.0),
+                decoration: InputDecoration(
+                  // Only show hint text when not focused
+                  hintText: _titleFocusNode.hasFocus ? '' : 'Enter a title for your dream',
                   border: OutlineInputBorder(),
+                  // Change the border color when focused
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(255, 46, 42, 148),
+                      width: 2.0,
+                    ),
+                  ),
+                  // Optional: you can also change the fill color when focused
+                  fillColor: _titleFocusNode.hasFocus 
+                      ? Color(0xFF201E66).withOpacity(0.05)
+                      : Colors.transparent,
+                  filled: true,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -68,17 +97,33 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              Text(
-                'What was it about?',
-                style: AppTheme.subheadingStyle,
-              ),
+              Text('What was it about?', style: AppTheme.subheadingStyle),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(
-                  hintText: 'Describe your dream...',
+                focusNode: _descriptionFocusNode,
+                cursorColor: Color.fromARGB(255, 46, 42, 148),
+                cursorWidth: 2.5,
+                cursorHeight: 24.0,
+                showCursor: true,
+                cursorRadius: Radius.circular(1.0),
+                decoration: InputDecoration(
+                  // Only show hint text when not focused
+                  hintText: _descriptionFocusNode.hasFocus ? '' : 'Describe your dream',
                   border: OutlineInputBorder(),
                   alignLabelWithHint: true,
+                  // Change the border color when focused
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(255, 46, 42, 148),
+                      width: 2.0,
+                    ),
+                  ),
+                  // Optional: you can also change the fill color when focused
+                  fillColor: _descriptionFocusNode.hasFocus 
+                      ? Color(0xFF201E66).withOpacity(0.05)
+                      : Colors.transparent,
+                  filled: true,
                 ),
                 maxLines: 5,
                 validator: (value) {
@@ -92,16 +137,12 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'I felt',
-                    style: AppTheme.subheadingStyle,
-                  ),
+                  Text('I felt', style: AppTheme.subheadingStyle),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildMoodOption('happy'),
-                      _buildMoodOption('content'),
                       _buildMoodOption('sad'),
                       _buildMoodOption('angry'),
                       _buildMoodOption('scared'),
@@ -117,7 +158,7 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
                 child: ElevatedButton(
                   onPressed: _saveDream,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
+                    backgroundColor: Color(0xFF201E66),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -141,7 +182,7 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
 
   Widget _buildMoodOption(String mood) {
     final bool isSelected = _selectedMood == mood;
-    
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -150,33 +191,25 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
       },
       child: Column(
         children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isSelected ? AppTheme.primaryColor.withOpacity(0.2) : Colors.transparent,
-              border: Border.all(
-                color: isSelected ? AppTheme.primaryColor : AppTheme.secondaryTextColor,
-                width: 2,
-              ),
-            ),
-            child: Center(
-              child: Image.asset(
-                'images/mood_$mood.png',
-                width: 40,
-                height: 40,
-              ),
+          SizedBox(
+            width: 80,
+            height: 80,
+            child: ClipOval(
+              child: Image.asset('images/mood_$mood.png', fit: BoxFit.cover),
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            mood.substring(0, 1).toUpperCase() + mood.substring(1),
+          AnimatedDefaultTextStyle(
+            duration: Duration(milliseconds: 200), // Animation duration
             style: TextStyle(
-              color: isSelected ? const Color(0xFF011638) : AppTheme.secondaryTextColor,
+              fontSize: isSelected ? 16 : 15, // Slightly larger when selected
+              color: isSelected
+                  ? const Color.fromARGB(255, 49, 45, 156)
+                  : AppTheme.secondaryTextColor,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
-          ),
+            child: Text(mood[0].toUpperCase() + mood.substring(1)),
+          )
         ],
       ),
     );
@@ -184,12 +217,14 @@ class _EditDreamScreenState extends State<EditDreamScreen> {
 
   void _saveDream() {
     if (_formKey.currentState!.validate()) {
-      final updatedDream = widget.dream.copyWith(
+      final updatedDream = Dream(
+        id: widget.dream.id,
+        date: widget.dream.date,
         title: _titleController.text,
         description: _descriptionController.text,
         mood: _selectedMood,
       );
-      
+
       Navigator.pop(context, updatedDream);
     }
   }

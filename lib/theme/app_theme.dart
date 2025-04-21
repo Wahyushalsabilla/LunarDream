@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Colors
-  static const Color primaryColor = Color(0xFF011638); // Dark blue
-  static const Color accentColor = Color(0xFF002D46); // Fixed: Added full opacity (0xFF)
-  static const Color backgroundColor = Color(0xFF0D2143); // Dark background
+  static const Color primaryColor = Color(0xFF131138);
+  static const Color accentColor = Color.fromARGB(255, 13, 0, 255); // Fixed: Added full opacity (0xFF)
+  static const Color backgroundColor = Color(0xFF131138); // Dark background
   static const Color cardColor = Color(0xFF000A1B); // Fixed: Made fully opaque for consistency
   // Alternative if you want partial transparency: Color(0x3B000A1B)
   static const Color textColor = Color(0xFFFFFFFF); // White text

@@ -62,7 +62,7 @@ class WelcomeScreen extends StatelessWidget {
                     Navigator.pushReplacementNamed(context, '/home');
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(265, 45),
+                    minimumSize: const Size(285, 60),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
